@@ -1,0 +1,71 @@
+FEATURES
+
+F.1 -- Orders
+F.1.1 -- Order information is derived from the Orders files in the /Orders directory
+F.1.1 -- Orders filenames must be of the form Orders_MMDDYYYY.txt
+F.1.2 -- Orders files are CSVs that start with the following headers in order
+    OrderNumber            - int
+    CustomerName           - String
+    State                  - String
+    TaxRate                - BigDecimal
+    ProductType            - String
+    Area                   - BigDecimal
+    CostPerSquareFoot      - BigDecimal
+    LaborCostPerSquareFoot - BigDecimal
+    MaterialCost           - BigDecimal (Computed as Area * CostPerSquareFoot)
+    LaborCost              - BigDecimal (Computed as Area * LaborCostPerSquareFoot)
+    Tax                    - BigDecimal (Computed as (MaterialCost + LaborCost) * (TaxRate / 100.0)
+    Total                  - BigDecimal (Computed as MaterialCost + LaborCost + Tax)
+
+F.2 -- Taxes
+F.2.1 -- Tax information is derived from the /Data/Taxes.txt file
+F.2.2 -- The Taxes.txt file is a CSV with the following headers in order
+    StateAbbreviation - String
+    StateName         - String
+    TaxRate           - BigDecimal
+
+F.3 -- Products
+F.3.1 -- Product information is gathered from the /Data/Products.txt file
+F.3.2 -- The Products.txt file is a CSV with the following headers in order
+    ProductType            - String
+    CostPerSquareFoot      - BigDecimal
+    LaborCostPerSquareFoot - BigDecimal
+
+F.4 -- Startup menu must appear as shown below
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * <<Flooring Program>>
+ * 1. Display Orders
+ * 2. Add an Order
+ * 3. Edit an Order
+ * 4. Remove an Order
+ * 5. Export All Data
+ * 6. Quit
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+F.4.1 -- Displaying Orders
+F.4.1.1 -- Query the user for a date
+F.4.1.2 -- Display the orders associated with that date. 
+           If there are none, display an error message and return to the main menu
+
+F.4.2 -- Adding Orders
+F.4.2.1 -- Query the following information
+F.4.2.1.1 -- An order date that lies in the future
+F.4.2.1.2 -- A nonempty String customer name
+F.4.2.1.3 -- Some state in the Taxes.txt file
+          ?? Does the user have to enter the full name of the state, or is the
+          ?? abbreviation also ok
+F.4.2.1.4 -- Show a list of available products and their pricing information
+          ** Have the user select one of these available products
+F.4.2.1.5 -- An area of at least 100 sq. ft.
+F.4.2.2 -- All the following fields must be computed accordingly
+    State                  - String
+    TaxRate                - BigDecimal
+    ProductType            - String
+    Area                   - BigDecimal
+    CostPerSquareFoot      - BigDecimal
+    LaborCostPerSquareFoot - BigDecimal
+    MaterialCost           - BigDecimal (Computed as Area * CostPerSquareFoot)
+    LaborCost              - BigDecimal (Computed as Area * LaborCostPerSquareFoot)
+    Tax                    - BigDecimal (Computed as (MaterialCost + LaborCost) * (TaxRate / 100.0)
+    Total                  - BigDecimal (Computed as MaterialCost + LaborCost + Tax)
