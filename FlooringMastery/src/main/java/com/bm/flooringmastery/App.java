@@ -1,10 +1,12 @@
 package com.bm.flooringmastery;
 
-import java.io.IOException;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import com.bm.flooringmastery.controller.FlooringMasteryController;
+import com.bm.flooringmastery.dao.FlooringMasteryOrderDaoFileImpl;
+import com.bm.flooringmastery.dao.FlooringMasteryProductDaoFileImpl;
+import com.bm.flooringmastery.dao.FlooringMasteryTaxDaoFileImpl;
+import com.bm.flooringmastery.service.FlooringMasteryService;
+import com.bm.flooringmastery.view.FlooringMasteryView;
+import com.bm.flooringmastery.view.UserIoConsoleImpl;
 
 /**
  * Acts as the entry point of the whole application
@@ -14,16 +16,18 @@ import java.nio.file.Path;
  * date: Aug 5, 2021
  */
 public class App {
-    public static void main(String[] args) throws IOException {
-        FileSystem fs = FileSystems.getDefault();
+    public static void main(String[] args) {
+        FlooringMasteryController controller = new FlooringMasteryController(
+            new FlooringMasteryView(
+                new UserIoConsoleImpl()
+            ),
+            new FlooringMasteryService(
+                new FlooringMasteryTaxDaoFileImpl(),
+                new FlooringMasteryProductDaoFileImpl(),
+                new FlooringMasteryOrderDaoFileImpl()
+            )
+        );
         
-        Path pp = FileSystems.getDefault().getPath("./Orders");
-        System.out.println(pp.toString());
-        
-        FileSystem fs2 = pp.getFileSystem();
-        
-        Files.walk(pp, 1).skip(1).forEach(path -> {
-            System.out.println(path.getFileName());
-        });
+        controller.run();
     }
 }

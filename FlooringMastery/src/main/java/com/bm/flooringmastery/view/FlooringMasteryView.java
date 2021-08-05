@@ -1,5 +1,7 @@
 package com.bm.flooringmastery.view;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
@@ -59,9 +61,11 @@ public class FlooringMasteryView {
      * @param contents 
      */
     public void displayAroundContents(String header, String... contents) {
-        displayLine(String.format("/| %s |\\", header));
-        Arrays.stream(contents).forEach(line -> displayLine(line));
-        displayLine(String.format("\\| %s /|", "-".repeat(header.length())));
+        displayLine("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+        displayLine(String.format(" * <<%s>>", header));
+        Arrays.stream(contents).forEach(line -> displayLine(" * " + line));
+        displayLine(" *");
+        displayLine(" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
     }
     
     /**
@@ -86,7 +90,6 @@ public class FlooringMasteryView {
                 receivedInt = Integer.parseInt(USER_IO.getLine());
                 invalid = !constraint.test(receivedInt);
             } catch (NumberFormatException ex) {
-                invalid = true;
             }
             if (invalid) {
                 displayErrorLine(errorText);
@@ -97,17 +100,16 @@ public class FlooringMasteryView {
     }
 
     /**
-     * Prompts the user for an int that matches some constraint.
+     * Prompts the user for a String that matches some constraint.
      * 
-     * Each time the entered int either cannot be converted to the 
-     * proper form or cannot meet the constraint, an error will be
+     * Each time the entered String cannot meet the constraint, an error will be
      * displayed to the user.
      * 
      * @param prompt
      * @param constraint
      * @param errorText 
      * 
-     * @return The aforementioned int
+     * @return The aforementioned String
      */
     public String getString(String prompt, Predicate<String> constraint, String errorText) {
         String receivedString = "";
@@ -124,4 +126,60 @@ public class FlooringMasteryView {
         return receivedString;
     }
 
+    /**
+     * Prompts the user for a BigDecimal that matches some constraint
+     * 
+     * Each time the input cannot be converted to a BigDecimal or fails
+     * to meet the constraint, an error will be displayed to the user
+     * 
+     * Otherwise,
+     * @param prompt
+     * @param constraint
+     * @param errorText
+     * @return The aforementioned BigDecimal
+     */
+    public BigDecimal getBigDecimal(String prompt, Predicate<BigDecimal> constraint, String errorText) {
+        BigDecimal receivedInput = BigDecimal.ZERO;
+        boolean invalid = true;
+        while (invalid) {
+            displaySolicitationLine(prompt);
+            try {
+                receivedInput = new BigDecimal(USER_IO.getLine());
+                invalid = !constraint.test(receivedInput);
+            } catch (Exception ex) {
+            }
+            if (invalid) {
+                displayErrorLine(errorText);
+            }
+        }
+        return receivedInput;
+    }
+
+    /**
+     * Prompts the user for a LocalDate that matches some constraint
+     * 
+     * Each time the input cannot be converted to a LocalDate or fails to meet
+     * the constraint, an error message will be displayed to the user
+     * 
+     * @param prompt
+     * @param constraint
+     * @param errorText
+     * @return The aforementioned LocalDate
+     */
+    public LocalDate getLocalDate(String prompt, Predicate<LocalDate> constraint, String errorText) {
+        LocalDate receivedInput = LocalDate.EPOCH;
+        boolean invalid = true;
+        while (invalid) {
+            displaySolicitationLine(prompt);
+            try {
+                receivedInput = LocalDate.parse(USER_IO.getLine());
+                invalid = !constraint.test(receivedInput);
+            } catch (Exception ex) {
+            }
+            if (invalid) {
+                displayErrorLine(errorText);
+            }
+        }
+        return receivedInput;
+    }
 }
