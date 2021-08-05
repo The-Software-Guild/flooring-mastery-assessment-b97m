@@ -43,12 +43,12 @@ F.4 -- Startup menu must appear as shown below
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-F.4.1 -- Displaying Orders
+F.4.1 -- DISPLAYING ORDERS
 F.4.1.1 -- Query the user for a date
 F.4.1.2 -- Display the orders associated with that date. 
            If there are none, display an error message and return to the main menu
 
-F.4.2 -- Adding Orders
+F.4.2 -- ADDING ORDERS
 F.4.2.1 -- Query the following information
 F.4.2.1.1 -- An order date that lies in the future
 F.4.2.1.2 -- A nonempty String customer name
@@ -58,14 +58,65 @@ F.4.2.1.3 -- Some state in the Taxes.txt file
 F.4.2.1.4 -- Show a list of available products and their pricing information
           ** Have the user select one of these available products
 F.4.2.1.5 -- An area of at least 100 sq. ft.
-F.4.2.2 -- All the following fields must be computed accordingly
-    State                  - String
-    TaxRate                - BigDecimal
-    ProductType            - String
-    Area                   - BigDecimal
-    CostPerSquareFoot      - BigDecimal
-    LaborCostPerSquareFoot - BigDecimal
-    MaterialCost           - BigDecimal (Computed as Area * CostPerSquareFoot)
-    LaborCost              - BigDecimal (Computed as Area * LaborCostPerSquareFoot)
-    Tax                    - BigDecimal (Computed as (MaterialCost + LaborCost) * (TaxRate / 100.0)
-    Total                  - BigDecimal (Computed as MaterialCost + LaborCost + Tax)
+
+F.4.2.2 -- All the following fields in F.1.2 must be computed accordingly for 
+           proper construction. 
+           The OrderNumber field must be assigned to the next available one?
+
+F.4.2.3 -- Display an order summary
+F.4.2.4 -- Query the user once more if they wish to place the order
+F.4.2.4.1A -- Upon a "Yes", the order data should be saved to "in-memory storage"
+F.4.2.4.1B -- Upon a "No", return to the main menu
+
+F.4.3 -- EDITING ORDERS
+F.4.3.1 -- Query the date and order number of the order
+F.4.3.2A -- Upon a valid Order entry...
+F.4.3.2A.1 -- Display existing data and query the following fields
+    CustomerName (See F.4.2.1.2)
+    State        (See F.4.2.1.3)
+    ProductType  (See F.4.2.1.4)
+    Area         (See F.4.2.1.5)
+F.4.3.2A.2 -- Display order change summary
+F.4.3.2A.3 -- Query the user once more if they wish to save the changes
+F.4.3.2A.3.1A -- Upon a "Yes", save the changes "in the file"
+F.4.3.2A.3.1B -- Upon a "No", just return to the main menu
+
+F.4.3.2B ?? Upon an invalid Order entry, return to main menu
+
+F.4.4 -- DELETING ORDERS
+F.4.4.1 -- Query the date and the order number of the order
+F.4.4.2A -- Upon a valid Order entry...
+F.4.4.2A.1 -- Display the order information
+F.4.4.2A.2 -- QUery the user once more if they wish to delete this order
+F.4.4.2A.3A -- Upon a yes, remove the order from "the list"
+F.4.4.2A.3B ?? Upon a no, return to main menu
+
+F.4.4.2B ?? Upon an invalid Order entry, return to main menu
+
+F.4.5 -- EXPORTING DATA
+F.4.5.1 ?? Write to a CSV that contains the following information for all the orders
+    OrderNumber
+    CustomerName
+    State
+    TaxRate
+    ProductType
+    Area
+    CostPerSquareFoot
+    LaborCostPerSquareFoot
+    MaterialCost
+    LaborCost
+    Tax
+    Total
+    OrderDate
+
+F.4.6 -- QUITTING
+F.4.6.1 -- Simply Quit the application
+
+-- ASSUMPTIONS --
+Orders are identified by their order date and order number
+
+For a newly created Order, A, its OrderNumber is determined in the
+following manner.
+    If there are no other Orders whose date matches A, this order number is 1
+    Otherwise, this OrderNumber one more than the maximum of all the OrderNumbers
+        of the other Orders 
