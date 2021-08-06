@@ -2,6 +2,7 @@ package com.bm.flooringmastery.dao;
 
 import com.bm.flooringmastery.dao.exceptions.FlooringMasteryFailedLoadException;
 import com.bm.flooringmastery.model.FlooringMasteryProduct;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -31,4 +32,16 @@ public interface FlooringMasteryProductDao {
      * @return Whether or not there is a product with this type
      */
     public boolean hasProductWithType(String type);
+    
+    /**
+     * Attempts to obtain a product with the associated type
+     * 
+     * If there is such a product, an instance containing it is returned
+     * 
+     * Otherwise, an empty instance is returned
+     * 
+     * @param type
+     * @return The aforementioned instances
+     */
+    public Optional<FlooringMasteryProduct> getProductByType(String type);
 }

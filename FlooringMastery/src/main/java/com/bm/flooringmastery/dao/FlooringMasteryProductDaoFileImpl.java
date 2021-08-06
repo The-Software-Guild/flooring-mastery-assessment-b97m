@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -68,5 +69,14 @@ public class FlooringMasteryProductDaoFileImpl implements FlooringMasteryProduct
     @Override
     public boolean hasProductWithType(String type) {
         return PRODUCTS_MAP.containsKey(type);
+    }
+
+    @Override
+    public Optional<FlooringMasteryProduct> getProductByType(String type) {
+        FlooringMasteryProduct product = PRODUCTS_MAP.get(type);
+        if (product == null) {
+            return Optional.empty();
+        }
+        return Optional.of(product);
     }
 }

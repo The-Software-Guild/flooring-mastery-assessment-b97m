@@ -8,8 +8,10 @@ package com.bm.flooringmastery.controller;
 
 import com.bm.flooringmastery.dao.exceptions.FlooringMasteryFailedLoadException;
 import com.bm.flooringmastery.model.FlooringMasteryOrder;
+import com.bm.flooringmastery.model.FlooringMasteryProduct;
 import com.bm.flooringmastery.service.FlooringMasteryService;
 import com.bm.flooringmastery.view.FlooringMasteryView;
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Set;
@@ -53,7 +55,7 @@ public class FlooringMasteryController {
                     displayOrders();
                     break;
                 case 2:
-                    VIEW.displayLine("ADD");
+                    addOrder();
                     break;
                 case 3:
                     VIEW.displayLine("EDIT");
@@ -106,6 +108,82 @@ public class FlooringMasteryController {
             "Tax: $" + order.getTax().setScale(2, COMMON_ROUNDING_MODE).toString(),
             "Total cost: $" + order.getTotal().setScale(2, COMMON_ROUNDING_MODE)
         );
+    }
+    
+    private void addOrder() {
+        LocalDate orderDate = VIEW.getLocalDate(
+            "Enter a future date (yyyy-mm-dd) for the order",
+            date -> LocalDate.now().isBefore(date),
+            "The entered date was invalid or not in in the future"
+        );
+        
+        int orderNum = SERVICE.ordersSet().stream()
+            .map(order -> order.getOrderNum())
+            .reduce(1, (a, b) -> Math.max(a, b));
+        orderNum++;
+        
+        String customerName = VIEW.getString(
+            "Enter the customer's name for the order", 
+            str -> !str.isEmpty(),
+            "The name must be nonempty"
+        );
+        
+        String abbr = VIEW.getString(
+            "Enter a State abbreviation for the order",
+            str -> SERVICE.hasTaxDataForStateAbbr(str),
+            "Either the input was not a state abbreviation, or there is "
+            + "insufficient tax data for that state"
+        );
+        BigDecimal percentTaxRate = SERVICE.percentTaxRateForStateAbbr(abbr).get();
+        
+        VIEW.displayInformationalLine("Available Products");
+        SERVICE.productsSet().forEach(product -> {
+            VIEW.displayAroundContents(
+                product.getType(),
+                "Cost per sq. ft.: $" + product.getCostPerSqFt().toString(),
+                "Labor cost per sq. ft.: $" + product.getLaborCostPerSqFt().toString()
+            );
+        });
+        
+        String prodType = VIEW.getString(
+            "Choose the floor type for this order", 
+            str -> SERVICE.hasProductWithType(str),
+            "That floor type is not available"
+        );
+        FlooringMasteryProduct orderedProd = SERVICE.getProductByType(prodType).get();
+        
+        BigDecimal area = VIEW.getBigDecimal(
+            "Enter total area (in sq. ft.) demanded for this floor type in this"
+            + " order (Min Allowed: 100)", 
+            val -> val.compareTo(new BigDecimal("100")) >= 0,
+            "The input must be some area no less than 100 sq. ft."
+        );
+         
+        FlooringMasteryOrder order = new FlooringMasteryOrder(
+            orderDate,
+            orderNum,
+            customerName,
+            abbr,
+            percentTaxRate,
+            orderedProd,
+            area
+        );
+        
+        VIEW.displayInformationalLine("Order Review");
+        displayOrder(order);
+        String yesNo = VIEW.getString(
+            "Submit order? (Y/n)",
+            str -> str.equals("Y") || str.equals("n"),
+            "Please enter \"Y\" or \"n\""
+        );
+        if (yesNo.equals("Y")) {
+            SERVICE.pushOrder(order);
+            VIEW.displayInformationalLine("Order submitted");
+        } else {
+            VIEW.displayLine("Order not submitted");
+        }
+        
+        pauseBeforeContinuation();
     }
     
     private void pauseBeforeContinuation() {

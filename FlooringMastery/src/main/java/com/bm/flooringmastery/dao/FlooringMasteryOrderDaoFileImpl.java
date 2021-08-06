@@ -49,7 +49,6 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
         this.ORDERS_MAP = new TreeMap<>();
     }
         
-    
     @Override
     public void loadFromExternals() throws FlooringMasteryFailedLoadException {
         List<String> filenames;
@@ -187,7 +186,7 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
             LocalDate date = entry.getKey();
             String filename = String.format(
                 "Orders_%2d%2d%4d.txt",
-                date.getDayOfMonth(),
+                date.getMonthValue(),
                 date.getDayOfMonth(),
                 date.getYear()
             );
