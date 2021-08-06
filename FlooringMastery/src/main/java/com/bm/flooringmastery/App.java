@@ -1,6 +1,7 @@
 package com.bm.flooringmastery;
 
 import com.bm.flooringmastery.controller.FlooringMasteryController;
+import com.bm.flooringmastery.dao.FlooringMasteryAuditDaoFileImpl;
 import com.bm.flooringmastery.dao.FlooringMasteryOrderDaoFileImpl;
 import com.bm.flooringmastery.dao.FlooringMasteryProductDaoFileImpl;
 import com.bm.flooringmastery.dao.FlooringMasteryTaxDaoFileImpl;
@@ -24,7 +25,8 @@ public class App {
             new FlooringMasteryService(
                 new FlooringMasteryTaxDaoFileImpl(),
                 new FlooringMasteryProductDaoFileImpl(),
-                new FlooringMasteryOrderDaoFileImpl()
+                new FlooringMasteryOrderDaoFileImpl(),
+                new FlooringMasteryAuditDaoFileImpl()
             )
         );
         

@@ -26,12 +26,33 @@ public interface FlooringMasteryOrderDao {
     public void loadFromExternals() throws FlooringMasteryFailedLoadException;
     
     /**
-     * Adds a new Order to the collection
+     * Attempts to add a new Order to the collection.
      * 
-     * Any existing order with the same date and number will be overwritten
+     * If there already exists an Order with the same date and number
+     * in the collection, an empty instance will be returned
+     * 
+     * Otherwise, an instance containing the passed in Order will be 
+     * returned
+     * 
      * @param order 
+     * @return The aforementioned instance
      */
-    public void pushOrder(FlooringMasteryOrder order);
+    public Optional<FlooringMasteryOrder> pushOrder(FlooringMasteryOrder order);
+    
+    /**
+     * Attempts to replace an order with the same date and number in the
+     * collection as the new order with the new order.
+     * 
+     * If there is no such order in the collection, an empty instance will
+     * be returned.
+     * 
+     * Otherwise, an instance containing the passed in order will be 
+     * returned
+     * 
+     * @param order
+     * @return The aforementioned instance
+     */
+    public Optional<FlooringMasteryOrder> replaceOrder(FlooringMasteryOrder order);
     
     /**
      * @return The set of all Orders in this collection
@@ -47,7 +68,6 @@ public interface FlooringMasteryOrderDao {
      * 
      * @param date
      * @param num
-     * @param id
      * @return The aforementioned instances
      */
     public Optional<FlooringMasteryOrder> getOrderByDateAndNumber(LocalDate date, int num);

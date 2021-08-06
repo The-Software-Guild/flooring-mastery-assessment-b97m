@@ -7,10 +7,12 @@ C:\Users\drive\Documents\repos\flooring-mastery-assessment-b97m\FlooringMastery\
 C:\Users\drive\Documents\repos\flooring-mastery-assessment-b97m\FlooringMastery\src\main\java\com\bm\flooringmastery\view\UserIO.java
 C:\Users\drive\Documents\repos\flooring-mastery-assessment-b97m\FlooringMastery\src\main\java\com\bm\flooringmastery\controller\FlooringMasteryController.java
 C:\Users\drive\Documents\repos\flooring-mastery-assessment-b97m\FlooringMastery\src\main\java\com\bm\flooringmastery\dao\exceptions\FlooringMasteryFailedExportException.java
+C:\Users\drive\Documents\repos\flooring-mastery-assessment-b97m\FlooringMastery\src\main\java\com\bm\flooringmastery\service\exceptions\FlooringMasteryOrderNotPresentForReplacementException.java
 C:\Users\drive\Documents\repos\flooring-mastery-assessment-b97m\FlooringMastery\src\main\java\com\bm\flooringmastery\dao\FlooringMasteryProductDao.java
 C:\Users\drive\Documents\repos\flooring-mastery-assessment-b97m\FlooringMastery\src\main\java\com\bm\flooringmastery\dao\FlooringMasteryTaxDao.java
 C:\Users\drive\Documents\repos\flooring-mastery-assessment-b97m\FlooringMastery\src\main\java\com\bm\flooringmastery\App.java
 C:\Users\drive\Documents\repos\flooring-mastery-assessment-b97m\FlooringMastery\src\main\java\com\bm\flooringmastery\model\FlooringMasteryOrder.java
+C:\Users\drive\Documents\repos\flooring-mastery-assessment-b97m\FlooringMastery\src\main\java\com\bm\flooringmastery\service\exceptions\FlooringMasteryOrderAlreadyExistsException.java
 C:\Users\drive\Documents\repos\flooring-mastery-assessment-b97m\FlooringMastery\src\main\java\com\bm\flooringmastery\dao\exceptions\FlooringMasteryFailedLoadException.java
 C:\Users\drive\Documents\repos\flooring-mastery-assessment-b97m\FlooringMastery\src\main\java\com\bm\flooringmastery\service\FlooringMasteryService.java
 C:\Users\drive\Documents\repos\flooring-mastery-assessment-b97m\FlooringMastery\src\main\java\com\bm\flooringmastery\dao\FlooringMasteryTaxDaoFileImpl.java

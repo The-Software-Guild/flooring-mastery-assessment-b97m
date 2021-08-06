@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * An implementation of the TaxDao interface
@@ -56,12 +57,7 @@ public class FlooringMasteryTaxDaoFileImpl implements FlooringMasteryTaxDao {
     }
 
     @Override
-    public boolean hasInfoForStateAbbr(String state) {
-        return percentTaxRateForStateAbbr(state).isPresent();
-    }
-
-    @Override
-    public Optional<BigDecimal> percentTaxRateForStateAbbr(String state) {
+    public Optional<BigDecimal> getPercentTaxRateForStateAbbr(String state) {
         BigDecimal rate = TAX_MAP.get(state);
         if (rate == null) {
             return Optional.empty();
@@ -69,4 +65,8 @@ public class FlooringMasteryTaxDaoFileImpl implements FlooringMasteryTaxDao {
         return Optional.of(rate);
     }
 
+    @Override
+    public Set<String> stateAbbrSet() {
+        return Set.copyOf(TAX_MAP.keySet());
+    }    
 }

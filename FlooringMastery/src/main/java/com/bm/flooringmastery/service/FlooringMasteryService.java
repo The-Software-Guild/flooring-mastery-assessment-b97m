@@ -1,11 +1,17 @@
 package com.bm.flooringmastery.service;
 
+import com.bm.flooringmastery.dao.FlooringMasteryAuditDao;
 import com.bm.flooringmastery.dao.FlooringMasteryOrderDao;
 import com.bm.flooringmastery.dao.FlooringMasteryProductDao;
 import com.bm.flooringmastery.dao.FlooringMasteryTaxDao;
+import com.bm.flooringmastery.dao.exceptions.FlooringMasteryFailedAuditEntryException;
+import com.bm.flooringmastery.dao.exceptions.FlooringMasteryFailedExportException;
 import com.bm.flooringmastery.dao.exceptions.FlooringMasteryFailedLoadException;
+import com.bm.flooringmastery.dao.exceptions.FlooringMasteryFailedSaveException;
 import com.bm.flooringmastery.model.FlooringMasteryOrder;
 import com.bm.flooringmastery.model.FlooringMasteryProduct;
+import com.bm.flooringmastery.service.exceptions.FlooringMasteryOrderAlreadyExistsException;
+import com.bm.flooringmastery.service.exceptions.FlooringMasteryOrderNotPresentForReplacementException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -25,11 +31,18 @@ public class FlooringMasteryService {
     private FlooringMasteryTaxDao taxDao;
     private FlooringMasteryProductDao prodDao;
     private FlooringMasteryOrderDao orderDao;
+    private FlooringMasteryAuditDao auditDao;
 
-    public FlooringMasteryService(FlooringMasteryTaxDao taxDao, FlooringMasteryProductDao prodDao, FlooringMasteryOrderDao orderDao) {
+    public FlooringMasteryService(
+        FlooringMasteryTaxDao taxDao,
+        FlooringMasteryProductDao prodDao,
+        FlooringMasteryOrderDao orderDao,
+        FlooringMasteryAuditDao auditDao) {
+        
         this.taxDao = taxDao;
         this.prodDao = prodDao;
         this.orderDao = orderDao;
+        this.auditDao = auditDao;
     }
     
     /**
@@ -43,21 +56,26 @@ public class FlooringMasteryService {
     public void loadDaos() throws FlooringMasteryFailedLoadException {
         List<String> loadErrs = new LinkedList<>();
         
+        recordEvent("Loading data...");
+        
         try {
             taxDao.loadDataFromExternals();
         } catch (FlooringMasteryFailedLoadException ex) {
+            recordEvent("Loading of tax data unsuccessful");
             loadErrs.add(ex.getMessage());
         }
         
         try {
             prodDao.loadDataFromExternals();
         } catch (FlooringMasteryFailedLoadException ex) {
+            recordEvent("Loading of product data unsuccessful");
             loadErrs.add(ex.getMessage());
         }
         
         try {
             orderDao.loadFromExternals();
         } catch (FlooringMasteryFailedLoadException ex) {
+            recordEvent("Loading of order data unsuccessful");
             loadErrs.add(ex.getMessage());
         }
         
@@ -66,16 +84,13 @@ public class FlooringMasteryService {
                 loadErrs.stream().collect(Collectors.joining(", "))
             );
         }
+        
+        recordEvent("Loading data successful");
     }
 
-    /**
-     * Tests if the state abbreviation has tax data
-     * 
-     * @param abbr
-     * @return true if there is, false otherwise
-     */
-    public boolean hasTaxDataForStateAbbr(String abbr) {
-        return taxDao.hasInfoForStateAbbr(abbr);
+    public Set<String> stateAbbrSet() {
+        recordEvent("State abbreviations queried");
+        return taxDao.stateAbbrSet();
     }
     
     /**
@@ -90,27 +105,19 @@ public class FlooringMasteryService {
      * @param abbr
      * @return The aforementioned instances
      */
-    public Optional<BigDecimal> percentTaxRateForStateAbbr(String abbr) {
-        return taxDao.percentTaxRateForStateAbbr(abbr);
+    public Optional<BigDecimal> getPercentTaxRateForStateAbbr(String abbr) {
+        recordEvent("% Tax rate for " + abbr + " queried");
+        return taxDao.getPercentTaxRateForStateAbbr(abbr);
     }
     
     /**
      * @return The set of all products in inventory
      */
     public Set<FlooringMasteryProduct> productsSet() {
+        recordEvent("Products queried");
         return prodDao.productsSet();
     }
     
-    /**
-     * Whether or not there is a product with this type in the inventory
-     * 
-     * @param type
-     * @return true if so, false otherwise
-     */
-    public boolean hasProductWithType(String type) {
-        return prodDao.hasProductWithType(type);
-    }
-
     /**
      * Attempts to get the product corresponding to this type
      * 
@@ -122,10 +129,26 @@ public class FlooringMasteryService {
      * @return The aforementioned instances
      */
     public Optional<FlooringMasteryProduct> getProductByType(String type) {
+        recordEvent("Product type " + type + " queried");
         return prodDao.getProductByType(type);
     }
 
+    /**
+     * @return The latest available order number
+     */
+    public int latestOrderNum() {
+        recordEvent("Computed latest order number");
+        int currMaxNum = orderDao.ordersSet().stream()
+                            .map(x -> x.getOrderNum())
+                            .reduce(1, (a, b) -> Math.max(a, b));
+        return currMaxNum + 1;
+    }
+    
+    /**
+     * @return The set of all Orders in the collection
+     */
     public Set<FlooringMasteryOrder> ordersSet() {
+        recordEvent("Orders queried");
         return orderDao.ordersSet();
     }
     
@@ -136,6 +159,7 @@ public class FlooringMasteryService {
      * @return The aforementioned orders
      */
     public Set<FlooringMasteryOrder> getOrdersByDate(LocalDate date) {
+        recordEvent("Orders for " + date.toString() + " queried");
         return orderDao.ordersSet().stream()
                 .filter((FlooringMasteryOrder order) -> {
                     return order.getOrderDate().equals(date);
@@ -144,10 +168,112 @@ public class FlooringMasteryService {
     }
 
     /**
-     * Pushes the indicated order into the collection
+     * Attempts to push a new order into the collection
+     * 
+     * If there already exists an order with the same number and date
+     * as the new one, the below exception will be thrown
+     * 
      * @param order 
+     * @throws com.bm.flooringmastery.service.exceptions.FlooringMasteryOrderAlreadyExistsException
      */
-    public void pushOrder(FlooringMasteryOrder order) {
-        orderDao.pushOrder(order);
+    public void pushOrder(FlooringMasteryOrder order) throws FlooringMasteryOrderAlreadyExistsException {
+        recordEvent("Attempting push of order");
+        if (orderDao.pushOrder(order).isEmpty()) {
+            recordEvent("Push failed");
+            throw new FlooringMasteryOrderAlreadyExistsException(
+                "It appears there is already an order with the same date and "
+                        + "number in the collection"
+            );
+        }
+        recordEvent("Push succeeded");
+    }
+    
+    /**
+     * Attempts to replace an order, A, in the collection with the same date 
+     * and number as the passed in order with the passed in order
+     * 
+     * If there is no such order A, the below exception will be thrown
+     * 
+     * @param order
+     * @throws com.bm.flooringmastery.service.exceptions.FlooringMasteryOrderNotPresentForReplacementException
+     */
+    public void replaceOrder(FlooringMasteryOrder order) throws FlooringMasteryOrderNotPresentForReplacementException {
+        recordEvent("Attempting replacement of order");
+        if (orderDao.replaceOrder(order).isEmpty()) {
+            recordEvent("Replacement failed");
+            throw new FlooringMasteryOrderNotPresentForReplacementException(
+                "It appears there is no order with the same date and number in "
+                + "the collection that can be replaced by the new order"
+            );
+        }
+        recordEvent("Replacement succeeded");
+    }
+
+    /**
+     * Attempts to retrieve an order in the collection with the matching 
+     * date and number
+     * 
+     * If no such order can be found, an empty instance is returned
+     * 
+     * Otherwise, an instance with the matching order is returned
+     * 
+     * @param date
+     * @param num
+     * @return The aforementioned instances
+     */
+    public Optional<FlooringMasteryOrder> getOrderByDateAndNumber(LocalDate date, int num) {
+        recordEvent("Order for " + num + " on " + date.toString() + " queried");
+        return orderDao.getOrderByDateAndNumber(date, num);
+    }
+    
+    /**
+     * Attempts to remove the order in the collection with the matching
+     * date and number
+     * 
+     * If no such order can be found, an empty instance is returned.
+     * 
+     * Otherwise, the matching order is removed from the collection, and an 
+     * instance containing the removed order if returned.
+     * 
+     * @param date
+     * @param num
+     * @return The aforementioned instances 
+     */
+    public Optional<FlooringMasteryOrder> removeOrderByDateAndNumber(LocalDate date, int num) {
+        recordEvent("Removal for order " + num + " on " + date.toString() + " attempted");
+        return orderDao.removeOrderByDateAndNumber(date, num);
+    }
+    
+    /**
+     * Saves the orders to an external source
+     * 
+     * If this saving fails, the below exception will be thrown
+     * 
+     * @throws FlooringMasteryFailedSaveException 
+     */
+    public void saveOrdersToExternals() throws FlooringMasteryFailedSaveException {
+        recordEvent("Saving of orders attempted");
+        orderDao.saveToExternals();
+        recordEvent("Saving succeeded");
+    }
+    
+    /**
+     * Exports the orders to some external source
+     * 
+     * If this exporting fails, the below exception will be thrown
+     * 
+     * @throws FlooringMasteryFailedExportException 
+     */
+    public void exportOrders() throws FlooringMasteryFailedExportException {
+        recordEvent("Exporting of orders attempted");
+        orderDao.export();
+        recordEvent("Exporting succeeded");
+    }
+
+    private void recordEvent(String event) {
+        try {
+            auditDao.appendLine(event);
+        } catch (FlooringMasteryFailedAuditEntryException ex) {
+        }
     }
 }

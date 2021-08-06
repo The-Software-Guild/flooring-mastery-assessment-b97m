@@ -3,6 +3,7 @@ package com.bm.flooringmastery.dao;
 import com.bm.flooringmastery.dao.exceptions.FlooringMasteryFailedLoadException;
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * A Dao for gathering and storing Tax information
@@ -20,13 +21,7 @@ public interface FlooringMasteryTaxDao {
      * @throws com.bm.flooringmastery.dao.exceptions.FlooringMasteryFailedLoadException
      */
     public void loadDataFromExternals() throws FlooringMasteryFailedLoadException;
-    
-    /**
-     * @param state
-     * @return Whether or not the indicated state has tax information
-     */
-    public boolean hasInfoForStateAbbr(String state);
-    
+        
     /**
      * Attempts to obtain the percentage tax rate for the indicated state
      * 
@@ -39,5 +34,10 @@ public interface FlooringMasteryTaxDao {
      * @param state
      * @return The aformentioned instances
      */
-    public Optional<BigDecimal> percentTaxRateForStateAbbr(String state);
+    public Optional<BigDecimal> getPercentTaxRateForStateAbbr(String state);
+    
+    /**
+     * @return The set of all Strings for which tax information is available
+     */
+    public Set<String> stateAbbrSet();
 }

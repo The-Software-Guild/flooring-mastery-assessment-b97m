@@ -67,11 +67,6 @@ public class FlooringMasteryProductDaoFileImpl implements FlooringMasteryProduct
     }
 
     @Override
-    public boolean hasProductWithType(String type) {
-        return PRODUCTS_MAP.containsKey(type);
-    }
-
-    @Override
     public Optional<FlooringMasteryProduct> getProductByType(String type) {
         FlooringMasteryProduct product = PRODUCTS_MAP.get(type);
         if (product == null) {

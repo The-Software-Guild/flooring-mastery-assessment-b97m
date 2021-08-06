@@ -12,10 +12,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -126,13 +128,41 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
     }
 
     @Override
-    public void pushOrder(FlooringMasteryOrder order) {
-        if (!ORDERS_MAP.containsKey(order.getOrderDate())) {
+    public Optional<FlooringMasteryOrder> pushOrder(FlooringMasteryOrder order) {
+        Optional<FlooringMasteryOrder> receivedInstance;
+        if (ORDERS_MAP.containsKey(order.getOrderDate())) {
+            Map<Integer, FlooringMasteryOrder> subMap = ORDERS_MAP.get(order.getOrderDate());
+            if (subMap.containsKey(order.getOrderNum())) {
+                receivedInstance = Optional.empty();
+            } else {
+                subMap.put(order.getOrderNum(), order);
+                receivedInstance = Optional.of(order);
+            }
+        } else {
             ORDERS_MAP.put(order.getOrderDate(), new TreeMap<>());
+            ORDERS_MAP.get(order.getOrderDate()).put(order.getOrderNum(), order);
+            receivedInstance = Optional.of(order);
         }
-        ORDERS_MAP.get(order.getOrderDate()).put(order.getOrderNum(), order);
+        return receivedInstance;
     }
 
+    @Override
+    public Optional<FlooringMasteryOrder> replaceOrder(FlooringMasteryOrder order) {
+        Optional<FlooringMasteryOrder> receivedInstance;
+        if (ORDERS_MAP.containsKey(order.getOrderDate())) {
+            Map<Integer, FlooringMasteryOrder> subMap = ORDERS_MAP.get(order.getOrderDate());
+            if (subMap.containsKey(order.getOrderNum())) {
+                subMap.put(order.getOrderNum(), order);
+                receivedInstance = Optional.of(order);
+            } else {
+                receivedInstance = Optional.empty();
+            }
+        } else {
+            receivedInstance = Optional.empty();
+        }
+        return receivedInstance;
+    }
+    
     @Override
     public Set<FlooringMasteryOrder> ordersSet() {
         Set<FlooringMasteryOrder> receivedOrders = new HashSet<>();
@@ -185,10 +215,8 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
         for (Entry<LocalDate, Map<Integer, FlooringMasteryOrder>> entry : ORDERS_MAP.entrySet()) {
             LocalDate date = entry.getKey();
             String filename = String.format(
-                "Orders_%2d%2d%4d.txt",
-                date.getMonthValue(),
-                date.getDayOfMonth(),
-                date.getYear()
+                "Orders_%s.txt",
+                date.format(DateTimeFormatter.ofPattern(("MMddyyyy")))
             );
             
             PrintWriter writer;
@@ -215,10 +243,10 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
                     order.getArea().toString(),
                     order.getCostPerSqFt().toString(),
                     order.getLaborCostPerSqFt().toString(),
-                    order.getMaterialCost().toString(),
-                    order.getLaborCost().toString(),
-                    order.getTax().toString(),
-                    order.getTotal().toString()
+                    order.getMaterialCost().setScale(2, RoundingMode.HALF_UP).toString(),
+                    order.getLaborCost().setScale(2, RoundingMode.HALF_UP).toString(),
+                    order.getTax().setScale(2, RoundingMode.HALF_UP).toString(),
+                    order.getTotal().setScale(2, RoundingMode.HALF_UP).toString()
                 );
                 writer.println(line);
             });
@@ -254,16 +282,11 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
                     order.getArea(),
                     order.getCostPerSqFt().toString(),
                     order.getLaborCostPerSqFt().toString(),
-                    order.getMaterialCost().toString(),
-                    order.getLaborCost().toString(),
-                    order.getTax().toString(),
-                    order.getTotal().toString(),
-                    String.format(
-                        "%2d-%2d-%4d",
-                        order.getOrderDate().getMonthValue(),
-                        order.getOrderDate().getDayOfYear(),
-                        order.getOrderDate().getYear()
-                    )
+                    order.getMaterialCost().setScale(2, RoundingMode.HALF_UP).toString(),
+                    order.getLaborCost().setScale(2, RoundingMode.HALF_UP).toString(),
+                    order.getTax().setScale(2, RoundingMode.HALF_UP).toString(),
+                    order.getTotal().setScale(2, RoundingMode.HALF_UP).toString(),
+                    order.getOrderDate().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
                 );
                 writer.println(line);
             }

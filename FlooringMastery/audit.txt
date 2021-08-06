@@ -1,0 +1,31 @@
+2021-08-06 12:19:22:734904400: Loading data...
+2021-08-06 12:19:22:773800400: Loading data successful
+2021-08-06 12:19:45:658330900: Orders for 2020-10-10 queried
+2021-08-06 12:20:02:417812200: Exporting of orders attempted
+2021-08-06 12:20:02:425791700: Exporting succeeded
+2021-08-06 12:21:22:240942000: Computed latest order number
+2021-08-06 12:22:00:585801500: State abbreviations queried
+2021-08-06 12:22:15:514382600: % Tax rate for mt queried
+2021-08-06 12:22:18:244177700: % Tax rate for MT queried
+2021-08-06 12:22:20:204513500: % Tax rate for NJ queried
+2021-08-06 12:22:22:277096400: % Tax rate for TX queried
+2021-08-06 12:22:22:279096700: % Tax rate for TX queried
+2021-08-06 12:22:22:281056700: Products queried
+2021-08-06 12:22:54:558129600: Product type Kryptonite queried
+2021-08-06 12:23:02:511809500: Product type Carpet queried
+2021-08-06 12:23:02:512760700: Product type Carpet queried
+2021-08-06 12:31:34:702642000: Orders for 2021-08-18 queried
+2021-08-06 12:31:56:600573000: Computed latest order number
+2021-08-06 12:32:02:586668300: State abbreviations queried
+2021-08-06 12:32:07:700789900: % Tax rate for OI queried
+2021-08-06 12:32:10:212667900: % Tax rate for TX queried
+2021-08-06 12:32:10:213661300: % Tax rate for TX queried
+2021-08-06 12:32:10:214658600: Products queried
+2021-08-06 12:32:14:788171200: Product type Tile queried
+2021-08-06 12:32:14:789169200: Product type Tile queried
+2021-08-06 12:35:09:872999600: Attempting push of order
+2021-08-06 12:35:09:873948800: Push succeeded
+2021-08-06 12:35:17:824346000: Exporting of orders attempted
+2021-08-06 12:35:17:828342500: Exporting succeeded
+2021-08-06 12:36:01:986850500: Saving of orders attempted
+2021-08-06 12:36:01:990835800: Saving succeeded

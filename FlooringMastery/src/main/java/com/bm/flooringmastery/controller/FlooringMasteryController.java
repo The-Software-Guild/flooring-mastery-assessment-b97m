@@ -1,15 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bm.flooringmastery.controller;
 
+import com.bm.flooringmastery.dao.exceptions.FlooringMasteryFailedExportException;
 import com.bm.flooringmastery.dao.exceptions.FlooringMasteryFailedLoadException;
+import com.bm.flooringmastery.dao.exceptions.FlooringMasteryFailedSaveException;
 import com.bm.flooringmastery.model.FlooringMasteryOrder;
 import com.bm.flooringmastery.model.FlooringMasteryProduct;
 import com.bm.flooringmastery.service.FlooringMasteryService;
+import com.bm.flooringmastery.service.exceptions.FlooringMasteryOrderAlreadyExistsException;
+import com.bm.flooringmastery.service.exceptions.FlooringMasteryOrderNotPresentForReplacementException;
 import com.bm.flooringmastery.view.FlooringMasteryView;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,7 +25,7 @@ public class FlooringMasteryController {
     private final FlooringMasteryView VIEW;
     private final FlooringMasteryService SERVICE;
 
-    private final RoundingMode COMMON_ROUNDING_MODE = RoundingMode.CEILING;
+    private final RoundingMode COMMON_ROUNDING_MODE = RoundingMode.HALF_UP;
     
     public FlooringMasteryController(FlooringMasteryView VIEW, FlooringMasteryService SERVICE) {
         this.VIEW = VIEW;
@@ -58,13 +56,13 @@ public class FlooringMasteryController {
                     addOrder();
                     break;
                 case 3:
-                    VIEW.displayLine("EDIT");
+                    editOrder();
                     break;
                 case 4:
-                    VIEW.displayLine("REMOVE");
+                    removeOrder();
                     break;
                 case 5:
-                    VIEW.displayLine("EXPORT");
+                    exportOrders();
                     break;
                 case 6:
                     VIEW.displayLine("QUIT");
@@ -74,12 +72,20 @@ public class FlooringMasteryController {
                     VIEW.displayErrorLine("UNKNOWN COMMAND");
             }
         }
+        
+        try {
+            SERVICE.saveOrdersToExternals();
+        } catch (FlooringMasteryFailedSaveException ex) {
+            VIEW.displayErrorLine("Unable to save orders");
+        }
+        
+        VIEW.close();
     }
 
     private void displayOrders() {
         LocalDate filterDate = VIEW.getLocalDate(
-            "Enter a valid date (yyyy-mm-dd) to select orders from", 
-            val -> true, 
+            "Enter a valid date (yyyy-mm-dd) to select orders from",
+            val -> true,
             "The entered input was invalid"
         );
         Set<FlooringMasteryOrder> orders = SERVICE.getOrdersByDate(filterDate);
@@ -116,12 +122,10 @@ public class FlooringMasteryController {
             date -> LocalDate.now().isBefore(date),
             "The entered date was invalid or not in in the future"
         );
+
+        int orderNum = SERVICE.latestOrderNum();
         
-        int orderNum = SERVICE.ordersSet().stream()
-            .map(order -> order.getOrderNum())
-            .reduce(1, (a, b) -> Math.max(a, b));
-        orderNum++;
-        
+        // customer name
         String customerName = VIEW.getString(
             "Enter the customer's name for the order", 
             str -> {
@@ -132,14 +136,20 @@ public class FlooringMasteryController {
         );
         customerName = customerName.trim();
         
+        // state abbr
+        VIEW.displayInformationalLine("States Available for Service");
+        SERVICE.stateAbbrSet().forEach(abbr -> VIEW.displayLine(abbr));
         String abbr = VIEW.getString(
             "Enter a State abbreviation for the order",
-            str -> SERVICE.hasTaxDataForStateAbbr(str),
+            str -> SERVICE.getPercentTaxRateForStateAbbr(str).isPresent(),
             "Either the input was not a state abbreviation, or there is "
             + "insufficient tax data for that state"
         );
-        BigDecimal percentTaxRate = SERVICE.percentTaxRateForStateAbbr(abbr).get();
         
+        // % tax rate
+        BigDecimal percentTaxRate = SERVICE.getPercentTaxRateForStateAbbr(abbr).get();
+        
+        // product
         VIEW.displayInformationalLine("Available Products");
         SERVICE.productsSet().forEach(product -> {
             VIEW.displayAroundContents(
@@ -148,14 +158,14 @@ public class FlooringMasteryController {
                 "Labor cost per sq. ft.: $" + product.getLaborCostPerSqFt().toString()
             );
         });
-        
         String prodType = VIEW.getString(
-            "Choose the floor type for this order", 
-            str -> SERVICE.hasProductWithType(str),
+            "Choose the floor type for this order",
+            str -> SERVICE.getProductByType(str).isPresent(),
             "That floor type is not available"
         );
         FlooringMasteryProduct orderedProd = SERVICE.getProductByType(prodType).get();
         
+        // area
         BigDecimal area = VIEW.getBigDecimal(
             "Enter total area (in sq. ft.) demanded for this floor type in this"
             + " order (Min Allowed: 100)", 
@@ -181,12 +191,174 @@ public class FlooringMasteryController {
             "Please enter \"Y\" or \"n\""
         );
         if (yesNo.equals("Y")) {
-            SERVICE.pushOrder(order);
-            VIEW.displayInformationalLine("Order submitted");
+            try {
+                SERVICE.pushOrder(order);
+                VIEW.displayInformationalLine("Order submitted");
+            } catch (FlooringMasteryOrderAlreadyExistsException ex) {
+                VIEW.displayErrorLine(ex.getMessage());
+                VIEW.displayInformationalLine("Order not submitted");
+            }
         } else {
             VIEW.displayInformationalLine("Order not submitted");
         }
         VIEW.displayInformationalLine("Returning to Main Menu");
+        pauseBeforeContinuation();
+    }
+    
+    private void editOrder() {
+        LocalDate filterDate = VIEW.getLocalDate(
+            "Enter a valid date (yyyy-mm-dd) of the order to edit", 
+            val -> true, 
+            "The entered input was invalid"
+        );
+        
+        int orderNum = VIEW.getInt(
+            "Enter the order number of the order to edit",
+            val -> true, 
+            "The entered input was invalid"
+        );
+        
+        SERVICE.getOrderByDateAndNumber(filterDate, orderNum).ifPresentOrElse(
+            order -> {
+                VIEW.displayInformationalLine("Current Order Data");
+                displayOrder(order);
+                
+                // customer name replacement
+                String customerName = VIEW.getStringReplacement(
+                    "Enter the customer's name for the order", 
+                    str -> !str.trim().contains("::"),
+                    "The new name must not contain the sequence \"::\"",
+                    order.getCustomerName()
+                );
+                customerName = customerName.trim();
+                
+                 // state abbr
+                VIEW.displayInformationalLine("States Available for Service");
+                SERVICE.stateAbbrSet().forEach(abbr -> VIEW.displayLine(abbr));
+                String abbr = VIEW.getStringReplacement(
+                    "Enter a State abbreviation for the order",
+                    str -> SERVICE.getPercentTaxRateForStateAbbr(str).isPresent(),
+                    "Either the input was not a state abbreviation, or there is "
+                    + "insufficient tax data for that state",
+                    order.getState()
+                );
+                
+                // % tax rate recomputed
+                BigDecimal percentTaxRate = SERVICE.getPercentTaxRateForStateAbbr(abbr).get();
+                
+                // product replacement
+                VIEW.displayInformationalLine("Available Products");
+                SERVICE.productsSet().forEach(product -> {
+                    VIEW.displayAroundContents(
+                        product.getType(),
+                        "Cost per sq. ft.: $" + product.getCostPerSqFt().toString(),
+                        "Labor cost per sq. ft.: $" + product.getLaborCostPerSqFt().toString()
+                    );
+                });        
+                String prodType = VIEW.getStringReplacement(
+                    "Choose the floor type for this order", 
+                    str -> SERVICE.getProductByType(str).isPresent(),
+                    "That floor type is not available",
+                    order.getProductType()
+                );
+                FlooringMasteryProduct orderedProd = SERVICE.getProductByType(prodType).get();
+                
+                // area replacement
+                BigDecimal area = VIEW.getBigDecimalReplacement(
+                    "Enter total area (in sq. ft.) demanded for this floor type in this"
+                    + " order (Min Allowed: 100)", 
+                    val -> val.compareTo(new BigDecimal("100")) >= 0,
+                    "The input must be some area no less than 100 sq. ft.",
+                    order.getArea()
+                );
+                
+                FlooringMasteryOrder newOrder = new FlooringMasteryOrder(
+                    order.getOrderDate(),
+                    order.getOrderNum(),
+                    customerName,
+                    abbr,
+                    percentTaxRate,
+                    orderedProd,
+                    area
+                );
+                
+                VIEW.displayInformationalLine("Order Edit Review");
+                VIEW.displayInformationalLine("Order was");
+                displayOrder(order);
+                VIEW.displayInformationalLine("Order now");
+                displayOrder(newOrder);
+                
+                String yesNo = VIEW.getString(
+                    "Submit changes? (Y/n)",
+                    str -> str.equals("Y") || str.equals("n"),
+                    "Please enter \"Y\" or \"n\""
+                );
+                if (yesNo.equals("Y")) {
+                    try {
+                        SERVICE.replaceOrder(newOrder);
+                        VIEW.displayInformationalLine("Order changes submitted");
+                    } catch (FlooringMasteryOrderNotPresentForReplacementException ex) {
+                        VIEW.displayErrorLine(ex.getMessage());
+                        VIEW.displayInformationalLine("Order changes not submitted");
+                    }
+                } else {
+                    VIEW.displayInformationalLine("Order changes not submitted");
+                }
+            },
+            () -> {
+                VIEW.displayErrorLine(
+                    "It appears that the indicated order with that date and "
+                    + "number does not exist"
+                );
+            }
+        );
+        pauseBeforeContinuation();
+    }
+    
+    private void removeOrder() {
+        LocalDate filterDate = VIEW.getLocalDate(
+            "Enter a valid date (yyyy-mm-dd) of the order to edit", 
+            val -> true, 
+            "The entered input was invalid"
+        );
+        
+        int orderNum = VIEW.getInt(
+            "Enter the order number of the order to edit",
+            val -> true, 
+            "The entered input was invalid"
+        );
+        
+        SERVICE.getOrderByDateAndNumber(filterDate, orderNum).ifPresentOrElse(
+            order -> {
+                VIEW.displayInformationalLine("Preparing to delete order");
+                displayOrder(order);
+                String yesNo = VIEW.getString(
+                    "Are you sure you want to delete this order? (Y/n)", 
+                    str -> str.equals("Y") || str.equals("n"), 
+                    "Please enter \"Y\" or \"n\""
+                );
+                if (yesNo.equals("Y")) {
+                    SERVICE.removeOrderByDateAndNumber(filterDate, orderNum).ifPresentOrElse(
+                        removedOrder -> VIEW.displayErrorLine("Order Successfully deleted"),
+                        () -> VIEW.displayErrorLine("Order deletion failed")
+                    );
+                } else {
+                    VIEW.displayInformationalLine("Order deletion cancelled");
+                }
+            }, 
+            () -> VIEW.displayErrorLine("That order does not exist")
+        );
+
+        pauseBeforeContinuation();
+    }
+    
+    private void exportOrders() {
+        try {
+            SERVICE.exportOrders();
+            VIEW.displayInformationalLine("Exporting Successful");
+        } catch (FlooringMasteryFailedExportException ex) {
+            VIEW.displayErrorLine("Exporting failed");
+        }
         pauseBeforeContinuation();
     }
     

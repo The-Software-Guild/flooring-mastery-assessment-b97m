@@ -127,6 +127,44 @@ public class FlooringMasteryView {
     }
 
     /**
+     * Prompts the user to enter one of the following
+     * 
+     * If the user submits an empty input, the replacement value will be returned
+     * 
+     * If the user submits a nonempty input that meets the constraints, this new
+     * input will be returned.
+     * 
+     * Otherwise, an error message will be displayed each time invalid input is
+     * entered
+     * 
+     * @param prompt
+     * @param constraint
+     * @param errorText 
+     * @param repVal
+     * 
+     * @return The aforementioned String
+     */
+    public String getStringReplacement(String prompt, Predicate<String> constraint, String errorText, String repVal) {
+        String receivedString = "";
+        boolean invalid = true;
+        while (invalid) {
+            displaySolicitationLine(prompt + " (currently " + repVal + ")");
+            receivedString = USER_IO.getLine();
+            if (receivedString.isEmpty()) {
+                receivedString = repVal;
+                invalid = false;
+            } else {
+               invalid = !constraint.test(receivedString);                
+            }
+            if (invalid) {
+                displayErrorLine(errorText);
+            }
+        }
+        
+        return receivedString;
+    }
+    
+    /**
      * Prompts the user for a BigDecimal that matches some constraint
      * 
      * Each time the input cannot be converted to a BigDecimal or fails
@@ -156,6 +194,47 @@ public class FlooringMasteryView {
     }
 
     /**
+     * Prompts the user to enter one of the following
+     * 
+     * If the user provides empty input, the replacement value will be returned.
+     * 
+     * If the user provides a nonempty input that meets the constraints, the new
+     * input will be returned
+     * 
+     * Otherwise, an error message will be displayed each time the user enters
+     * invalid input.
+     * 
+     * @param prompt
+     * @param constraint
+     * @param errorText
+     * @param repVal
+     * @return The aforementioned user input
+     */
+    public BigDecimal getBigDecimalReplacement(String prompt, Predicate<BigDecimal> constraint, String errorText, BigDecimal repVal) {
+        BigDecimal receivedValue = BigDecimal.ZERO;
+        boolean invalid = true;
+        while (invalid) {
+            displaySolicitationLine(prompt + " (currently " + repVal.toString() + ")");
+            String receivedString = USER_IO.getLine();
+            if (receivedString.isEmpty()) {
+                receivedValue = repVal;
+                invalid = false;
+            } else {
+                try {
+                    receivedValue = new BigDecimal(receivedString);
+                    invalid = !constraint.test(receivedValue);
+                } catch (Exception ex) {
+                }
+            }
+            if (invalid) {
+                displayErrorLine(errorText);
+            }
+        }
+        
+        return receivedValue;
+    }
+    
+    /**
      * Prompts the user for a LocalDate that matches some constraint
      * 
      * Each time the input cannot be converted to a LocalDate or fails to meet
@@ -181,5 +260,12 @@ public class FlooringMasteryView {
             }
         }
         return receivedInput;
+    }
+
+    /**
+     * Frees all resources associated with this component
+     */
+    public void close() {
+        USER_IO.close();
     }
 }
