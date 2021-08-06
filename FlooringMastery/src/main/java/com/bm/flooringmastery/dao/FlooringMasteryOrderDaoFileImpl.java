@@ -92,7 +92,7 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
             
             reader.nextLine(); // ignore header
             while (reader.hasNextLine()) {
-                String[] tokens = reader.nextLine().split(",");
+                String[] tokens = reader.nextLine().split("::");
                 int orderNum = Integer.parseInt(tokens[0]);
                 String customerName = tokens[1];
                 String state = tokens[2];
@@ -199,14 +199,14 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
             }
             
             writer.println(
-                "OrderNumber,CustomerName,State,TaxRate,ProductType,Area,"
-                + "CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,"
-                + "LaborCost,Tax,Total"
+                "OrderNumber::CustomerName::State::TaxRate::ProductType::Area::"
+                + "CostPerSquareFoot::LaborCostPerSquareFoot::MaterialCost::"
+                + "LaborCost::Tax::Total"
             );
             
             entry.getValue().values().forEach(order -> {
                 String line = String.format(
-                    "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
+                    "%d::%s::%s::%s::%s::%s::%s::%s::%s::%s::%s::%s",
                     order.getOrderNum(),
                     order.getCustomerName(),
                     order.getState(),
@@ -237,15 +237,15 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
         }
         
         writer.println(
-            "OrderNumber,CustomerName,State,TaxRate,ProductType,Area,"
-            + "CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,"
-            + "Tax,Total,OrderDate"
+            "OrderNumber::CustomerName::State::TaxRate::ProductType::Area::"
+            + "CostPerSquareFoot::LaborCostPerSquareFoot::MaterialCost::LaborCost::"
+            + "Tax::Total::OrderDate"
         );
         
         for (Map<Integer, FlooringMasteryOrder> subMap : ORDERS_MAP.values()) {
             for (FlooringMasteryOrder order : subMap.values()) {
                 String line = String.format(
-                    "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
+                    "%d::%s::%s::%s::%s::%s::%s::%s::%s::%s::%s::%s::%s",
                     order.getOrderNum(),
                     order.getCustomerName(),
                     order.getState(),

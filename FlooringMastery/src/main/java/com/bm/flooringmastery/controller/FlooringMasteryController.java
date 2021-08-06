@@ -124,9 +124,13 @@ public class FlooringMasteryController {
         
         String customerName = VIEW.getString(
             "Enter the customer's name for the order", 
-            str -> !str.isEmpty(),
-            "The name must be nonempty"
+            str -> {
+                String trimmed = str.trim();
+                return !(trimmed.isEmpty() || trimmed.contains("::"));
+            },
+            "The name must be nonempty and must not contain the sequence \"::\""
         );
+        customerName = customerName.trim();
         
         String abbr = VIEW.getString(
             "Enter a State abbreviation for the order",
@@ -180,9 +184,9 @@ public class FlooringMasteryController {
             SERVICE.pushOrder(order);
             VIEW.displayInformationalLine("Order submitted");
         } else {
-            VIEW.displayLine("Order not submitted");
+            VIEW.displayInformationalLine("Order not submitted");
         }
-        
+        VIEW.displayInformationalLine("Returning to Main Menu");
         pauseBeforeContinuation();
     }
     

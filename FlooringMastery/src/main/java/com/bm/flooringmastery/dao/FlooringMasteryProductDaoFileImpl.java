@@ -47,7 +47,7 @@ public class FlooringMasteryProductDaoFileImpl implements FlooringMasteryProduct
         reader.nextLine();
         
         while(reader.hasNextLine()) {
-            String[] tokens = reader.nextLine().split(",");
+            String[] tokens = reader.nextLine().split("::");
             String type = tokens[0];
             BigDecimal costPerSqFt = new BigDecimal(tokens[1]);
             BigDecimal laborCostPerSqFt = new BigDecimal(tokens[2]);

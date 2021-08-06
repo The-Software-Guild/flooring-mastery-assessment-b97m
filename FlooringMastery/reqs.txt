@@ -3,7 +3,7 @@ FEATURES
 F.1 -- Orders
 F.1.1 -- Order information is derived from the Orders files in the /Orders directory
 F.1.1 -- Orders filenames must be of the form Orders_MMDDYYYY.txt
-F.1.2 -- Orders files are CSVs that start with the following headers in order
+F.1.2 -- Orders files are .txt files where each line contains the following information in order
     OrderNumber            - int
     CustomerName           - String
     State                  - String
@@ -51,7 +51,8 @@ F.4.1.2 -- Display the orders associated with that date.
 F.4.2 -- ADDING ORDERS
 F.4.2.1 -- Query the following information
 F.4.2.1.1 -- An order date that lies in the future
-F.4.2.1.2 -- A nonempty String customer name
+F.4.2.1.2 -- A nonempty String customer name that may include periods, commas,
+             and/or alpha-numeric chars
 F.4.2.1.3 -- Some state in the Taxes.txt file
           ?? Does the user have to enter the full name of the state, or is the
           ?? abbreviation also ok

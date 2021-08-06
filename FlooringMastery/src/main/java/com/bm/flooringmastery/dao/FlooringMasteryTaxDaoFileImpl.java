@@ -45,7 +45,7 @@ public class FlooringMasteryTaxDaoFileImpl implements FlooringMasteryTaxDao {
         // ignore header
         reader.nextLine();
         while (reader.hasNextLine()) {
-            String[] tokens = reader.nextLine().split(",");
+            String[] tokens = reader.nextLine().split("::");
             String state = tokens[0];
             BigDecimal rate = new BigDecimal(tokens[2]);
             
