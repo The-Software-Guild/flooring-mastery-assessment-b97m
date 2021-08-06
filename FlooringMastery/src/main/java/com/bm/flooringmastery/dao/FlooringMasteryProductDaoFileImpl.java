@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
@@ -63,7 +64,9 @@ public class FlooringMasteryProductDaoFileImpl implements FlooringMasteryProduct
 
     @Override
     public Set<FlooringMasteryProduct> productsSet() {
-        return Set.copyOf(PRODUCTS_MAP.values());
+        Set<FlooringMasteryProduct> receivedSet = new HashSet<>();
+        PRODUCTS_MAP.values().forEach(prod -> receivedSet.add(prod));
+        return receivedSet;
     }
 
     @Override

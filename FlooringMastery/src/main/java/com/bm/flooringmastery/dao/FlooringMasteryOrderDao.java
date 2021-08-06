@@ -60,6 +60,12 @@ public interface FlooringMasteryOrderDao {
     public Set<FlooringMasteryOrder> ordersSet();
     
     /**
+     * @param date
+     * @return All the Orders associated with this date
+     */
+    public Set<FlooringMasteryOrder> ordersByDate(LocalDate date);
+    
+    /**
      * Attempts to obtain an Order matching the date and number
      * 
      * If no such Order can be found, an empty instance will be returned

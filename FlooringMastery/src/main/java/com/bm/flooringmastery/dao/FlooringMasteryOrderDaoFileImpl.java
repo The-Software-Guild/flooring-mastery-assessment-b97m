@@ -174,6 +174,15 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
     }
 
     @Override
+    public Set<FlooringMasteryOrder> ordersByDate(LocalDate date) {
+        Map<Integer, FlooringMasteryOrder> subMap = ORDERS_MAP.get(date);
+        if (subMap == null) {
+            return new HashSet<>();
+        }
+        return subMap.values().stream().collect(Collectors.toSet());
+    }
+    
+    @Override
     public Optional<FlooringMasteryOrder> getOrderByDateAndNumber(LocalDate date, int num) {
         Optional<FlooringMasteryOrder> receivedInstance;
         Map<Integer, FlooringMasteryOrder> subMap = ORDERS_MAP.get(date);
@@ -202,9 +211,6 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
                 receivedInstance = Optional.empty();
             } else {
                 receivedInstance = Optional.of(order);
-                if (subMap.isEmpty()) {
-                    ORDERS_MAP.remove(date);
-                }
             }
         }
         return receivedInstance;

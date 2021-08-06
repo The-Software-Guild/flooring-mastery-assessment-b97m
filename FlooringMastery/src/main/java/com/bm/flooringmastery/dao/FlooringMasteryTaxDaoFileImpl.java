@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
@@ -67,6 +68,8 @@ public class FlooringMasteryTaxDaoFileImpl implements FlooringMasteryTaxDao {
 
     @Override
     public Set<String> stateAbbrSet() {
-        return Set.copyOf(TAX_MAP.keySet());
+        Set<String> receivedSet = new HashSet<>();
+        TAX_MAP.keySet().forEach(abbr -> receivedSet.add(abbr));
+        return receivedSet;
     }    
 }

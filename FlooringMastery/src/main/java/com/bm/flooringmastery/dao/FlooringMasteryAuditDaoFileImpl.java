@@ -18,7 +18,7 @@ public class FlooringMasteryAuditDaoFileImpl implements FlooringMasteryAuditDao 
     private final String AUDIT_FILE;
 
     public FlooringMasteryAuditDaoFileImpl() {
-        this("audit.txt");
+        this("Diagnostics/audit.txt");
     }   
     
     public FlooringMasteryAuditDaoFileImpl(String AUDIT_FILE) {

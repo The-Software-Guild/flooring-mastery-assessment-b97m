@@ -32,7 +32,7 @@ public interface FlooringMasteryTaxDao {
      * returned.
      * 
      * @param state
-     * @return The aformentioned instances
+     * @return The aforementioned instances
      */
     public Optional<BigDecimal> getPercentTaxRateForStateAbbr(String state);
     

@@ -140,7 +140,7 @@ public class FlooringMasteryService {
         recordEvent("Computed latest order number");
         int currMaxNum = orderDao.ordersSet().stream()
                             .map(x -> x.getOrderNum())
-                            .reduce(1, (a, b) -> Math.max(a, b));
+                            .reduce(0, (a, b) -> Math.max(a, b));
         return currMaxNum + 1;
     }
     
@@ -160,11 +160,7 @@ public class FlooringMasteryService {
      */
     public Set<FlooringMasteryOrder> getOrdersByDate(LocalDate date) {
         recordEvent("Orders for " + date.toString() + " queried");
-        return orderDao.ordersSet().stream()
-                .filter((FlooringMasteryOrder order) -> {
-                    return order.getOrderDate().equals(date);
-                })
-                .collect(Collectors.toSet());
+        return orderDao.ordersByDate(date);
     }
 
     /**

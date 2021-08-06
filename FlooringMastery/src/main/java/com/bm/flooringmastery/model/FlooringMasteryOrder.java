@@ -12,16 +12,16 @@ import java.util.Objects;
  * date: Aug 5, 2021
  */
 public class FlooringMasteryOrder {
-    private LocalDate orderDate;
-    private int orderNum;
+    private final LocalDate ORDER_DATE;
+    private final int ORDER_NUM;
     
-    private String customerName;
+    private final String CUSTOMER_NAME;
     
-    private String state;
-    private BigDecimal percentTaxRate;
+    private final String STATE;
+    private final BigDecimal PERCENT_TAX_RATE;
     
-    private FlooringMasteryProduct orderedProd;
-    private BigDecimal area;
+    private final FlooringMasteryProduct ORDERED_PROD;
+    private final BigDecimal AREA;
 
     public FlooringMasteryOrder(
         LocalDate orderDate, 
@@ -32,49 +32,49 @@ public class FlooringMasteryOrder {
         FlooringMasteryProduct orderedProd, 
         BigDecimal area) {
         
-        this.orderDate = orderDate;
-        this.orderNum = orderNum;
-        this.customerName = customerName;
-        this.state = state;
-        this.percentTaxRate = percentTaxRate;
-        this.orderedProd = orderedProd;
-        this.area = area;
+        this.ORDER_DATE = orderDate;
+        this.ORDER_NUM = orderNum;
+        this.CUSTOMER_NAME = customerName;
+        this.STATE = state;
+        this.PERCENT_TAX_RATE = percentTaxRate;
+        this.ORDERED_PROD = orderedProd;
+        this.AREA = area;
     }
 
     public LocalDate getOrderDate() {
-        return orderDate;
+        return ORDER_DATE;
     }
 
     public int getOrderNum() {
-        return orderNum;
+        return ORDER_NUM;
     }
 
     public String getCustomerName() {
-        return customerName;
+        return CUSTOMER_NAME;
     }
 
     public String getState() {
-        return state;
+        return STATE;
     }
 
     public BigDecimal getPercentTaxRate() {
-        return percentTaxRate;
+        return PERCENT_TAX_RATE;
     }
 
     public String getProductType() {
-        return orderedProd.getType();
+        return ORDERED_PROD.getType();
     }
     
     public BigDecimal getArea() {
-        return area;
+        return AREA;
     }
     
     public BigDecimal getCostPerSqFt() {
-        return orderedProd.getCostPerSqFt();
+        return ORDERED_PROD.getCostPerSqFt();
     }
     
     public BigDecimal getLaborCostPerSqFt() {
-        return orderedProd.getLaborCostPerSqFt();
+        return ORDERED_PROD.getLaborCostPerSqFt();
     }
     
     public BigDecimal getMaterialCost() {
@@ -101,13 +101,13 @@ public class FlooringMasteryOrder {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 53 * hash + Objects.hashCode(this.orderDate);
-        hash = 53 * hash + this.orderNum;
-        hash = 53 * hash + Objects.hashCode(this.customerName);
-        hash = 53 * hash + Objects.hashCode(this.state);
-        hash = 53 * hash + Objects.hashCode(this.percentTaxRate);
-        hash = 53 * hash + Objects.hashCode(this.orderedProd);
-        hash = 53 * hash + Objects.hashCode(this.area);
+        hash = 53 * hash + Objects.hashCode(this.ORDER_DATE);
+        hash = 53 * hash + this.ORDER_NUM;
+        hash = 53 * hash + Objects.hashCode(this.CUSTOMER_NAME);
+        hash = 53 * hash + Objects.hashCode(this.STATE);
+        hash = 53 * hash + Objects.hashCode(this.PERCENT_TAX_RATE);
+        hash = 53 * hash + Objects.hashCode(this.ORDERED_PROD);
+        hash = 53 * hash + Objects.hashCode(this.AREA);
         return hash;
     }
 
@@ -123,29 +123,29 @@ public class FlooringMasteryOrder {
             return false;
         }
         final FlooringMasteryOrder other = (FlooringMasteryOrder) obj;
-        if (this.orderNum != other.orderNum) {
+        if (this.ORDER_NUM != other.ORDER_NUM) {
             return false;
         }
-        if (!Objects.equals(this.customerName, other.customerName)) {
+        if (!Objects.equals(this.CUSTOMER_NAME, other.CUSTOMER_NAME)) {
             return false;
         }
-        if (!Objects.equals(this.state, other.state)) {
+        if (!Objects.equals(this.STATE, other.STATE)) {
             return false;
         }
-        if (!Objects.equals(this.orderDate, other.orderDate)) {
+        if (!Objects.equals(this.ORDER_DATE, other.ORDER_DATE)) {
             return false;
         }
-        if (!Objects.equals(this.percentTaxRate, other.percentTaxRate)) {
+        if (!Objects.equals(this.PERCENT_TAX_RATE, other.PERCENT_TAX_RATE)) {
             return false;
         }
-        if (!Objects.equals(this.orderedProd, other.orderedProd)) {
+        if (!Objects.equals(this.ORDERED_PROD, other.ORDERED_PROD)) {
             return false;
         }
-        return Objects.equals(this.area, other.area);
+        return Objects.equals(this.AREA, other.AREA);
     }
 
     @Override
     public String toString() {
-        return "FlooringMasteryOrder{" + "orderDate=" + orderDate + ", orderNum=" + orderNum + ", customerName=" + customerName + ", state=" + state + ", percentTaxRate=" + percentTaxRate + ", orderedProd=" + orderedProd + ", area=" + area + '}';
+        return "FlooringMasteryOrder{" + "orderDate=" + ORDER_DATE + ", orderNum=" + ORDER_NUM + ", customerName=" + CUSTOMER_NAME + ", state=" + STATE + ", percentTaxRate=" + PERCENT_TAX_RATE + ", orderedProd=" + ORDERED_PROD + ", area=" + AREA + '}';
     }
 }
