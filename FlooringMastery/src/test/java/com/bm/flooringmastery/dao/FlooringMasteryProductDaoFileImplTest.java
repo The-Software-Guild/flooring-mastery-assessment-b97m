@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Benjamin Munoz
  */
 public class FlooringMasteryProductDaoFileImplTest {
-
     private FlooringMasteryProductDao subject;
     
     @Test

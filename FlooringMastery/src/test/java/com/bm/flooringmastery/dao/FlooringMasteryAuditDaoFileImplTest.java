@@ -14,14 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Timeout;
 
 /**
- * Tests for the AuditDao file implementation
- * 
  * @author Benjamin Munoz
  */
 public class FlooringMasteryAuditDaoFileImplTest {    
-    public FlooringMasteryAuditDaoFileImplTest() {
-    }
-
     @Test
     @Timeout(30) // this shouldn't take very long
     public void testAppendLine() throws IOException {
@@ -71,5 +66,4 @@ public class FlooringMasteryAuditDaoFileImplTest {
             );
         }
     }
-    
 }

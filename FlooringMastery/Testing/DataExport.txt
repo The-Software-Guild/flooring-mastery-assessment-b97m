@@ -1,0 +1,4 @@
+OrderNumber::CustomerName::State::TaxRate::ProductType::Area::CostPerSquareFoot::LaborCostPerSquareFoot::MaterialCost::LaborCost::Tax::Total::OrderDate
+17::Norman Bates::WA::9.25::Carpet::100::2.25::2.10::225.00::210.00::40.24::475.24::02-23-2019
+18::Sakhila's Fabrics, Inc.::KY::6.00::Laminate::200::1.75::2.10::350.00::420.00::46.20::816.20::02-23-2021
+20::Lumber-X::CA::25.00::Tile::175::3.50::4.15::612.50::726.25::334.69::1673.44::02-23-2021

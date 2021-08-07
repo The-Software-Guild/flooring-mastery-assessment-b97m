@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.TreeMap;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -48,7 +48,7 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
     public FlooringMasteryOrderDaoFileImpl(String SRC_DIRECTORY, String EXP_FILE) {
         this.SRC_DIRECTORY = SRC_DIRECTORY;
         this.EXP_FILE = EXP_FILE;
-        this.ORDERS_MAP = new TreeMap<>();
+        this.ORDERS_MAP = new HashMap<>();
     }
         
     @Override
@@ -119,7 +119,7 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
                     area
                 );
                 if (!ORDERS_MAP.containsKey(orderDate)) {
-                    ORDERS_MAP.put(orderDate, new TreeMap<>());
+                    ORDERS_MAP.put(orderDate, new HashMap<>());
                 }
                 ORDERS_MAP.get(orderDate).put(order.getOrderNum(), order);
             }
@@ -130,7 +130,9 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
     @Override
     public Optional<FlooringMasteryOrder> pushOrder(FlooringMasteryOrder order) {
         Optional<FlooringMasteryOrder> receivedInstance;
-        if (ORDERS_MAP.containsKey(order.getOrderDate())) {
+        if (order == null) {
+            receivedInstance = Optional.empty();
+        } else if (ORDERS_MAP.containsKey(order.getOrderDate())) {
             Map<Integer, FlooringMasteryOrder> subMap = ORDERS_MAP.get(order.getOrderDate());
             if (subMap.containsKey(order.getOrderNum())) {
                 receivedInstance = Optional.empty();
@@ -139,7 +141,7 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
                 receivedInstance = Optional.of(order);
             }
         } else {
-            ORDERS_MAP.put(order.getOrderDate(), new TreeMap<>());
+            ORDERS_MAP.put(order.getOrderDate(), new HashMap<>());
             ORDERS_MAP.get(order.getOrderDate()).put(order.getOrderNum(), order);
             receivedInstance = Optional.of(order);
         }
@@ -149,7 +151,9 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
     @Override
     public Optional<FlooringMasteryOrder> replaceOrder(FlooringMasteryOrder order) {
         Optional<FlooringMasteryOrder> receivedInstance;
-        if (ORDERS_MAP.containsKey(order.getOrderDate())) {
+        if (order == null) {
+            receivedInstance = Optional.empty();
+        } else if (ORDERS_MAP.containsKey(order.getOrderDate())) {
             Map<Integer, FlooringMasteryOrder> subMap = ORDERS_MAP.get(order.getOrderDate());
             if (subMap.containsKey(order.getOrderNum())) {
                 subMap.put(order.getOrderNum(), order);
@@ -179,6 +183,7 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
         if (subMap == null) {
             return new HashSet<>();
         }
+
         return subMap.values().stream().collect(Collectors.toSet());
     }
     
@@ -227,7 +232,7 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
             
             PrintWriter writer;
             try {
-                writer = new PrintWriter(new FileWriter("Orders/" + filename));
+                writer = new PrintWriter(new FileWriter(SRC_DIRECTORY + "/" + filename));
             } catch (IOException ex) {
                 throw new FlooringMasteryFailedSaveException("Unable to save orders", ex);
             }

@@ -1,0 +1,2 @@
+OrderNumber::CustomerName::State::TaxRate::ProductType::Area::CostPerSquareFoot::LaborCostPerSquareFoot::MaterialCost::LaborCost::Tax::Total
+17::Norman Bates::WA::9.25::Carpet::100::2.25::2.10::225::210::40.24::475.24

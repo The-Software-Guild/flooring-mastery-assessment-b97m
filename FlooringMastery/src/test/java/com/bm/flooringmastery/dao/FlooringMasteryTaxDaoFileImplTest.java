@@ -13,11 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Benjamin Munoz
  */
 public class FlooringMasteryTaxDaoFileImplTest {
-    
     private FlooringMasteryTaxDao subject;
-    
-    public FlooringMasteryTaxDaoFileImplTest() {
-    }    
 
     @Test
     public void testAllMethodsOnEmpty() throws IOException, FlooringMasteryFailedLoadException {
