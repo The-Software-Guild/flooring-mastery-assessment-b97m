@@ -28,6 +28,8 @@ public interface FlooringMasteryOrderDao {
     /**
      * Attempts to add a new Order to the collection.
      * 
+     * If the input is null, an empty instance is returned
+     * 
      * If there already exists an Order with the same date and number
      * in the collection, an empty instance will be returned
      * 
@@ -42,6 +44,8 @@ public interface FlooringMasteryOrderDao {
     /**
      * Attempts to replace an order with the same date and number in the
      * collection as the new order with the new order.
+     * 
+     * If the input is null, an empty instance is returned
      * 
      * If there is no such order in the collection, an empty instance will
      * be returned.

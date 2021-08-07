@@ -88,6 +88,9 @@ public class FlooringMasteryService {
         recordEvent("Loading data successful");
     }
 
+    /**
+     * @return The set of state abbrevations for which tax information is available
+     */
     public Set<String> stateAbbrSet() {
         recordEvent("State abbreviations queried");
         return taxDao.stateAbbrSet();
@@ -159,7 +162,7 @@ public class FlooringMasteryService {
      * @return The aforementioned orders
      */
     public Set<FlooringMasteryOrder> getOrdersByDate(LocalDate date) {
-        recordEvent("Orders for " + date.toString() + " queried");
+        recordEvent("Orders for " + date + " queried");
         return orderDao.ordersByDate(date);
     }
 
@@ -218,7 +221,7 @@ public class FlooringMasteryService {
      * @return The aforementioned instances
      */
     public Optional<FlooringMasteryOrder> getOrderByDateAndNumber(LocalDate date, int num) {
-        recordEvent("Order for " + num + " on " + date.toString() + " queried");
+        recordEvent("Order for " + num + " on " + date + " queried");
         return orderDao.getOrderByDateAndNumber(date, num);
     }
     
@@ -236,7 +239,7 @@ public class FlooringMasteryService {
      * @return The aforementioned instances 
      */
     public Optional<FlooringMasteryOrder> removeOrderByDateAndNumber(LocalDate date, int num) {
-        recordEvent("Removal for order " + num + " on " + date.toString() + " attempted");
+        recordEvent("Removal for order " + num + " on " + date + " attempted");
         return orderDao.removeOrderByDateAndNumber(date, num);
     }
     
