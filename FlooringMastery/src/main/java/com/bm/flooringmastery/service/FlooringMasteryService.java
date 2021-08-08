@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Acts as the Service Layer for this application
@@ -27,12 +29,14 @@ import java.util.stream.Collectors;
  * email: driver396@gmail.com
  * date: Aug 5, 2021
  */
+@Component
 public class FlooringMasteryService {
     private FlooringMasteryTaxDao taxDao;
     private FlooringMasteryProductDao prodDao;
     private FlooringMasteryOrderDao orderDao;
     private FlooringMasteryAuditDao auditDao;
 
+    @Autowired
     public FlooringMasteryService(
         FlooringMasteryTaxDao taxDao,
         FlooringMasteryProductDao prodDao,

@@ -8,27 +8,28 @@ import com.bm.flooringmastery.service.exceptions.FlooringMasteryOrderNotPresentF
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * @author Benjamin Munoz
  */
 public class FlooringMasteryServiceTest {
+    private final AnnotationConfigApplicationContext CTX = new AnnotationConfigApplicationContext(
+        FlooringMasteryService.class,
+        FlooringMasteryAuditDaoStubImpl.class,
+        FlooringMasteryProductDaoStubImpl.class,
+        FlooringMasteryTaxDaoStubImpl.class,
+        FlooringMasteryOrderDaoStubImpl.class
+    );
     
     private FlooringMasteryService subject;
     
     @BeforeEach
     public void setUp() {
-        subject = new FlooringMasteryService(
-            new FlooringMasteryTaxDaoStubImpl(),
-            new FlooringMasteryProductDaoStubImpl(),
-            new FlooringMasteryOrderDaoStubImpl(),
-            new FlooringMasteryAuditDaoStubImpl()
-        );
+        subject = CTX.getBean(FlooringMasteryService.class);
     }
 
     @Test

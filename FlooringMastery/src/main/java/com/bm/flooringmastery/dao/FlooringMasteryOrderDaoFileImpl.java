@@ -27,6 +27,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
 /**
  * An implementation of the OrderDao interface
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
  * email: driver396@gmail.com
  * date: Aug 5, 2021
  */
+@Component
 public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao {
     private final String SRC_DIRECTORY;
     private final String EXP_FILE;

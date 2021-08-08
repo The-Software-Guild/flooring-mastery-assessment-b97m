@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import org.springframework.stereotype.Component;
 
 /**
  * An implementation of the ProductDao interface
@@ -20,6 +21,7 @@ import java.util.Set;
  * email: driver396@gmail.com
  * date: Aug 5, 2021
  */
+@Component
 public class FlooringMasteryProductDaoFileImpl implements FlooringMasteryProductDao {
     private final String SRC_FILE;
     private final Map<String, FlooringMasteryProduct> PRODUCTS_MAP;

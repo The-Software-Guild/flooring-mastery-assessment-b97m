@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import org.springframework.stereotype.Component;
 
 /**
  * An implementation of the TaxDao interface
@@ -19,6 +20,7 @@ import java.util.Set;
  * email: driver396@gmail.com
  * date: Aug 5, 2021
  */
+@Component
 public class FlooringMasteryTaxDaoFileImpl implements FlooringMasteryTaxDao {
     private final String SRC_FILE;
     private final Map<String, BigDecimal> TAX_MAP;

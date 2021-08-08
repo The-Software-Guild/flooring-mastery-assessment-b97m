@@ -2,6 +2,7 @@ package com.bm.flooringmastery.service;
 
 import com.bm.flooringmastery.dao.FlooringMasteryAuditDao;
 import com.bm.flooringmastery.dao.exceptions.FlooringMasteryFailedAuditEntryException;
+import org.springframework.stereotype.Component;
 
 /**
  * A stub implementation of the Audit Dao for testing purposes

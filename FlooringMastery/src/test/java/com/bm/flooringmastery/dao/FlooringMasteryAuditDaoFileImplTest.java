@@ -23,7 +23,6 @@ public class FlooringMasteryAuditDaoFileImplTest {
          // set up an empty file
         new PrintWriter(new FileWriter("Testing/audit.txt"));
         
-        
         FlooringMasteryAuditDaoFileImpl instance = new FlooringMasteryAuditDaoFileImpl("Testing/audit.txt");
         
         String[] testStrings = new String[] {

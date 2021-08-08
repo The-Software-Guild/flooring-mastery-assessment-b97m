@@ -1,6 +1,7 @@
 package com.bm.flooringmastery.view;
 
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 
 /**
  * An implementation of the UserIo interface based on interactions with the 
@@ -10,6 +11,7 @@ import java.util.Scanner;
  * email: driver396@gmail.com
  * date: Aug 5, 2021
  */
+@Component
 public class UserIoConsoleImpl implements UserIO {
     private final Scanner USER_IO = new Scanner(System.in);
     

@@ -613,7 +613,6 @@ public class FlooringMasteryOrderDaoFileImplTest {
         reader.close();
         
         assertEquals(lines.size(), 4, "There should be four lines");
-        System.out.println(lines);
         assertTrue(
             lines.contains(
                 "OrderNumber::CustomerName::State::TaxRate::ProductType::Area::"

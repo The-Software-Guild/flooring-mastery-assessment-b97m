@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Acts as the controller for this application
@@ -21,12 +23,14 @@ import java.util.Set;
  * email: driver396@gmail.com
  * date: Aug 5, 2021
  */
+@Component
 public class FlooringMasteryController {
     private final FlooringMasteryView VIEW;
     private final FlooringMasteryService SERVICE;
 
     private final RoundingMode COMMON_ROUNDING_MODE = RoundingMode.HALF_UP;
     
+    @Autowired
     public FlooringMasteryController(FlooringMasteryView VIEW, FlooringMasteryService SERVICE) {
         this.VIEW = VIEW;
         this.SERVICE = SERVICE;
@@ -65,7 +69,7 @@ public class FlooringMasteryController {
                     exportOrders();
                     break;
                 case 6:
-                    VIEW.displayLine("QUIT");
+                    VIEW.displayInformationalLine("Exiting application...");
                     active = false;
                     break;
                 default:
@@ -225,9 +229,14 @@ public class FlooringMasteryController {
                 
                 // customer name replacement
                 String customerName = VIEW.getStringReplacement(
-                    "Enter the customer's name for the order", 
-                    str -> !str.trim().contains("::"),
-                    "The new name must not contain the sequence \"::\"",
+                    "Enter the customer's name for the order, or enter nothing"
+                    + " to maintain current value", 
+                    str -> {
+                        String trimmed = str.trim();
+                        return !(trimmed.isEmpty() || trimmed.contains("::"));
+                    },
+                    "The new name must be nonempty and must not contain the "
+                    + "sequence \"::\"",
                     order.getCustomerName()
                 );
                 customerName = customerName.trim();
@@ -236,7 +245,8 @@ public class FlooringMasteryController {
                 VIEW.displayInformationalLine("States Available for Service");
                 SERVICE.stateAbbrSet().forEach(abbr -> VIEW.displayLine(abbr));
                 String abbr = VIEW.getStringReplacement(
-                    "Enter a State abbreviation for the order",
+                    "Enter a State abbreviation for the order, or enter nothing"
+                    + " to maintain current value",
                     str -> SERVICE.getPercentTaxRateForStateAbbr(str).isPresent(),
                     "Either the input was not a state abbreviation, or there is "
                     + "insufficient tax data for that state",
@@ -256,7 +266,8 @@ public class FlooringMasteryController {
                     );
                 });        
                 String prodType = VIEW.getStringReplacement(
-                    "Choose the floor type for this order", 
+                    "Choose the floor type for this order, or enter nothing to"
+                    + " maintain current value", 
                     str -> SERVICE.getProductByType(str).isPresent(),
                     "That floor type is not available",
                     order.getProductType()
@@ -266,7 +277,8 @@ public class FlooringMasteryController {
                 // area replacement
                 BigDecimal area = VIEW.getBigDecimalReplacement(
                     "Enter total area (in sq. ft.) demanded for this floor type in this"
-                    + " order (Min Allowed: 100)", 
+                    + " order (Min Allowed: 100), or enter nothing to maintain"
+                    + " current value", 
                     val -> val.compareTo(new BigDecimal("100")) >= 0,
                     "The input must be some area no less than 100 sq. ft.",
                     order.getArea()
@@ -285,7 +297,7 @@ public class FlooringMasteryController {
                 VIEW.displayInformationalLine("Order Edit Review");
                 VIEW.displayInformationalLine("Order was");
                 displayOrder(order);
-                VIEW.displayInformationalLine("Order now");
+                VIEW.displayInformationalLine("Order will now be");
                 displayOrder(newOrder);
                 
                 String yesNo = VIEW.getString(
@@ -317,13 +329,13 @@ public class FlooringMasteryController {
     
     private void removeOrder() {
         LocalDate filterDate = VIEW.getLocalDate(
-            "Enter a valid date (yyyy-mm-dd) of the order to edit", 
+            "Enter a valid date (yyyy-mm-dd) of the order to remove", 
             val -> true, 
             "The entered input was invalid"
         );
         
         int orderNum = VIEW.getInt(
-            "Enter the order number of the order to edit",
+            "Enter the order number of the order to remove",
             val -> true, 
             "The entered input was invalid"
         );

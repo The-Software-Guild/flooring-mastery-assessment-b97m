@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.function.Predicate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Acts as the View component of this application
@@ -12,9 +14,11 @@ import java.util.function.Predicate;
  * email: driver396@gmail.com
  * date: Aug 5, 2021
  */
+@Component
 public class FlooringMasteryView {
     private final UserIO USER_IO;
 
+    @Autowired
     public FlooringMasteryView(UserIO USER_IO) {
         this.USER_IO = USER_IO;
     }

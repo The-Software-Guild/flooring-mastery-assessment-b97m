@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.springframework.stereotype.Component;
 
 /**
  * An implementation of the AuditDao interface
@@ -14,6 +15,7 @@ import java.time.format.DateTimeFormatter;
  * email: driver396@gmail.com
  * date: Aug 6, 2021
  */
+@Component
 public class FlooringMasteryAuditDaoFileImpl implements FlooringMasteryAuditDao {
     private final String AUDIT_FILE;
 
