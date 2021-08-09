@@ -116,13 +116,13 @@ public class FlooringMasteryProductDaoFileImplTest {
 
     @Test
     public void testAllOnMulti() throws IOException, FlooringMasteryFailedLoadException {
-        PrintWriter setupWriter = new PrintWriter(new FileWriter("Testing/Products_single.txt"));
+        PrintWriter setupWriter = new PrintWriter(new FileWriter("Testing/Products_multi.txt"));
         setupWriter.println("ProductType::CostPerSquareFoot::LaborCostPerSquareFoot");
         setupWriter.println("Marble::7.77::4.78");
         setupWriter.println("Vinyl::3.91::2.43");
         setupWriter.close();
         
-        subject = new FlooringMasteryProductDaoFileImpl("Testing/Products_single.txt");
+        subject = new FlooringMasteryProductDaoFileImpl("Testing/Products_multi.txt");
         
         for (int i = 0; i < 10; i++) {
             subject.loadDataFromExternals();

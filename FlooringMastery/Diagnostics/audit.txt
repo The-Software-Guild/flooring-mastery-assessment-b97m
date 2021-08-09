@@ -1,53 +1,27 @@
-2021-08-08 10:50:05:153742300: Saving of orders attempted
-2021-08-08 10:50:05:159691200: Saving succeeded
-2021-08-08 10:50:14:658488600: Loading data...
-2021-08-08 10:50:14:683422300: Loading data successful
-2021-08-08 10:50:49:589194700: Orders for 2021-08-09 queried
-2021-08-08 10:51:16:365638400: Order for 9 on 2021-08-09 queried
-2021-08-08 10:51:26:524448800: State abbreviations queried
-2021-08-08 10:51:49:161066400: % Tax rate for PA queried
-2021-08-08 10:51:49:163028500: % Tax rate for PA queried
-2021-08-08 10:51:49:164025900: Products queried
-2021-08-08 10:51:54:301519500: Product type Carpet queried
-2021-08-08 10:51:54:302512500: Product type Carpet queried
-2021-08-08 10:52:18:032770500: Saving of orders attempted
-2021-08-08 10:52:18:042933900: Saving succeeded
-2021-08-08 10:55:38:471160500: Loading data...
-2021-08-08 10:55:38:494100100: Loading data successful
-2021-08-08 10:56:03:525013700: Order for 8 on 2021-09-01 queried
-2021-08-08 10:56:14:467235400: State abbreviations queried
-2021-08-08 10:56:17:866373700: % Tax rate for TX queried
-2021-08-08 10:56:17:867370900: Products queried
-2021-08-08 10:56:27:503019100: Product type Laminate queried
-2021-08-08 10:56:27:505019200: Product type Laminate queried
-2021-08-08 10:57:27:363275700: Attempting replacement of order
-2021-08-08 10:57:27:365222800: Replacement succeeded
-2021-08-08 10:57:31:068581200: Exporting of orders attempted
-2021-08-08 10:57:31:074570300: Exporting succeeded
-2021-08-08 10:58:06:946612100: Order for 7 on 2021-09-01 queried
-2021-08-08 10:58:10:868910600: Removal for order 7 on 2021-09-01 attempted
-2021-08-08 10:58:20:251180300: Orders for 2021-09-01 queried
-2021-08-08 10:59:09:242665700: Exporting of orders attempted
-2021-08-08 10:59:09:246694000: Exporting succeeded
-2021-08-08 10:59:18:844454900: Computed latest order number
-2021-08-08 10:59:43:937952200: State abbreviations queried
-2021-08-08 10:59:46:879839800: % Tax rate for CA queried
-2021-08-08 10:59:46:880833000: % Tax rate for CA queried
-2021-08-08 10:59:46:881830000: Products queried
-2021-08-08 10:59:52:003476900: Product type Tile queried
-2021-08-08 10:59:52:004475000: Product type Tile queried
-2021-08-08 11:02:22:417981000: Attempting push of order
-2021-08-08 11:02:22:420984400: Push succeeded
-2021-08-08 11:02:24:925182100: Exporting of orders attempted
-2021-08-08 11:02:24:929176800: Exporting succeeded
-2021-08-08 11:03:00:400529600: Order for 10 on 2021-09-01 queried
-2021-08-08 11:03:06:948285700: State abbreviations queried
-2021-08-08 11:03:08:146601200: % Tax rate for CA queried
-2021-08-08 11:03:08:147551000: Products queried
-2021-08-08 11:03:10:000492000: Product type Tile queried
-2021-08-08 11:03:49:012722100: Attempting replacement of order
-2021-08-08 11:03:49:013720200: Replacement succeeded
-2021-08-08 11:03:50:544306200: Exporting of orders attempted
-2021-08-08 11:03:50:546264400: Exporting succeeded
-2021-08-08 11:04:03:997761200: Saving of orders attempted
-2021-08-08 11:04:04:004774800: Saving succeeded
+2021-08-09 11:05:36:469502100: Loading data...
+2021-08-09 11:05:36:495429700: Loading data successful
+2021-08-09 11:06:26:652584300: Orders for 2021-09-01 queried
+2021-08-09 11:06:51:892026200: Order for 8 on 2021-09-01 queried
+2021-08-09 11:06:59:337765400: State abbreviations queried
+2021-08-09 11:07:25:404782900: % Tax rate for TX queried
+2021-08-09 11:07:25:407780300: Products queried
+2021-08-09 11:07:26:608964700: Product type Laminate queried
+2021-08-09 11:07:37:620746100: Attempting replacement of order
+2021-08-09 11:07:37:623736500: Replacement succeeded
+2021-08-09 11:07:54:221779900: Exporting of orders attempted
+2021-08-09 11:07:54:230742600: Exporting succeeded
+2021-08-09 11:09:18:810688400: Saving of orders attempted
+2021-08-09 11:09:18:823650300: Saving succeeded
+2021-08-09 11:58:23:380367100: Loading data...
+2021-08-09 11:58:23:405308500: Loading data successful
+2021-08-09 11:59:04:027415600: Orders for 2021-08-10 queried
+2021-08-09 12:04:22:078999500: Order for 11 on 2021-08-10 queried
+2021-08-09 12:04:24:684298800: State abbreviations queried
+2021-08-09 12:04:26:209784200: % Tax rate for TX queried
+2021-08-09 12:04:26:209784200: Products queried
+2021-08-09 12:04:31:437700400: Product type Tile queried
+2021-08-09 12:04:31:437700400: Product type Tile queried
+2021-08-09 12:06:00:951191800: Attempting replacement of order
+2021-08-09 12:06:00:952189200: Replacement succeeded
+2021-08-09 12:06:03:351246700: Saving of orders attempted
+2021-08-09 12:06:03:357231100: Saving succeeded
